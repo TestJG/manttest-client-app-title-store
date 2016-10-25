@@ -34,6 +34,7 @@ import {
 } from "rxstore-jest";
 
 import { defaultAppTitleState, createAppTitleStore, AppTitleState, AppTitleStore, AppTitleActions } from "./index";
+import { MessagesActions } from "manttest-client-messages-store";
 
 describe("defaultAppTitleState", () => {
     describe("Sanity checks", () => {
@@ -96,24 +97,3 @@ testActions(AppTitleActions, "AppTitleActions",
 
             actions.empty("logOut", "LOG_OUT");
 }));
-
-describe("AppTitleEvents", () => {
-
-    describe("When the event cleanMessages is called", () => {
-      it("should dispatch a CLEAN_MESSAGES action", () => {
-          const store = createAppTitleStore()();
-          store.action$.subscribe(a => expect(a).toEqual(AppTitleActions.cleanMessages()));
-          store.cleanMessages();
-      });
-    });
-
-    describe("When the event logOut is called", () => {
-      it("should dispatch a LOG_OUT action", () => {
-          const store = createAppTitleStore()();
-          store.action$.subscribe(a => expect(a).toEqual(AppTitleActions.logOut()));
-          store.logOut();
-      });
-    });
-
-  
-});

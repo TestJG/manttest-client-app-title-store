@@ -17,9 +17,11 @@ import {
   reducerFromActions, Reducer, StateUpdate,
   createStore, Store, StoreMiddleware,
   withEffects, defineStore, ICreateStoreOptions, logUpdates,
-  tunnelActions, extendWithActions, extendWith,
+  tunnelActions, extendWithActions, extendWith, Action,
 } from "rxstore";
-import { MessagesStore, MessagesModel, createMessagesStore, alertEffects } from "manttest-client-messages-store";
+import {
+MessagesStore, MessagesModel, createMessagesStore, alertEffects, MessagesActions,
+} from "manttest-client-messages-store";
 
 /* MODELS */
 
@@ -83,5 +85,18 @@ export const defaultAppTitleState = (): AppTitleState => ({
 export const createAppTitleStore = () => defineStore<AppTitleState, AppTitleStore>(
   AppTitleReducer,
   defaultAppTitleState,
-  extendWithActions(AppTitleActions)
+  extendWithActions(AppTitleActions),
+  tunnelActions({
+    actions: {
+      loadMessages: (a: Action) => MessagesActions.addMessages(a.payload),
+      cleanMessages: (a: Action) => MessagesActions.cleanMessages(),
+    },
+    dispatchFactory: (store: AppTitleStore) => store.state$.map(s => s.messagesStore.dispatch),
+  }),
+  tunnelActions({
+    actions: {
+      loadMessages: (a: Action) => MessagesActions.addMessages(a.payload),
+    },
+    dispatchFactory: (store: AppTitleStore) => store.state$.map(s => s.snackBarMessagesStore.dispatch),
+  }),
 );
